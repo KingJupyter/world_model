@@ -130,7 +130,7 @@ def display_graph(first_selected_variable_id, second_selected_variable_id):
     # Create Plotly figure
     fig = make_subplots(specs=[[{"secondary_y": True}]])
     fig.add_trace(
-        go.Scatter(x=years, y=first_average_yearly_values, mode='lines', name=first_variable.variable_name, line_shape='spline', connectgaps=True),
+        go.Scatter(x=years, y=first_average_yearly_values, name=first_variable.variable_name, line_shape='spline'),
         secondary_y=False,
     )
 
