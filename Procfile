@@ -1,0 +1,1 @@
+web: gunicorn --workers 3 world_model.wsgi:application

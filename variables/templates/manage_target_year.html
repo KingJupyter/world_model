@@ -1,0 +1,46 @@
+{% extends 'master.html' %}
+
+{% block content %}
+  <style>
+    input {
+      box-shadow: inset #13e966 0 0 0 2px;
+      border: 0;
+      background: rgba(0, 0, 0, 0);
+      appearance: none;
+      position: relative;
+      border-radius: 3px;
+      padding: 9px 1rem;
+      line-height: 1.4;
+      color: rgb(0, 0, 0);
+      font-size: 16px;
+      font-weight: 400;
+      height: 40px;
+      transition: all 0.2s ease;
+      width: 6rem;
+    }
+    input:hover {
+      box-shadow: 0 0 0 0 #fff inset, #1de9b6 0 0 0 2px;
+    }
+    input:focus {
+      background: #fff;
+      outline: 0;
+      box-shadow: 0 0 0 0 #fff inset, #1de9b6 0 0 0 3px;
+    }
+    label {
+      font-family: 'Kanit', sans-serif;
+      font-weight: 400;
+      font-style: normal;
+      font-size: x-large;
+      color: green;
+      padding-right: 20px;
+    }
+  </style>
+  <h1 class="title text-center mt-3">Input Target Year</h1>
+  <form method="POST" class="w-50 text-center mx-auto mt-5" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="text-center">
+      <button type="submit" class="btn btn-lg btn-success mt-3">Next</button>
+    </div>
+  </form>
+{% endblock %}

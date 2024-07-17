@@ -1,0 +1,40 @@
+{% extends 'master.html' %}
+
+{% block title %}
+  Output
+{% endblock %}
+
+{% block content %}
+  <div class="container mt-5">
+    <h1 class="text-center mb-4 title text-info">Select the Variables to Display</h1>
+    
+    {% comment %} <form action="{{ url_for('select') }}" method="post"> {% endcomment %}
+    <form action="" method="post">
+      <div class="row">
+        <!-- Loop through each variable to create checkboxes dynamically -->
+        {% for x in variables %}
+          <div class="col-md-6 col-lg-4 mb-3">
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <div class="checkbox-wrapper-63 d-flex align-items-center">
+                  <label class="switch" for="checkbox_{{ x.id }}">
+                    <input type="checkbox" id="checkbox_{{ x.id }}" name="variables" checked />
+                    <span class="slider"></span>
+                  </label>
+                  <span class="h3 ms-3 text-success" style="font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">{{ x.variable_name }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Button to submit the form or link to display graph -->
+      <div class="d-flex justify-content-end mt-4">
+        <div class="myBtn">
+          <a href="/output/graph">Display Graph</a>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock %}

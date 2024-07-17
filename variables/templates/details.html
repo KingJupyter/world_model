@@ -1,0 +1,23 @@
+{% extends "master.html" %}
+
+{% block title %}
+Details about {{ variable.name_field }}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="card">
+    <div class="card-header">
+      <h1 class="card-title">{{ variable.variable_name }}</h1>
+    </div>
+    <div class="card-body">
+      <p class="card-text"><strong>Type:</strong> {{ variable.variable_type }}</p>
+      <p class="card-text"><strong>Option:</strong> {{ variable.variable_options }}</p>
+      <p class="card-text"><strong>Definition:</strong> {{ variable.variable_definition }}</p>
+      <p class="card-text"><strong>Level in 2023:</strong> {{ variable.level_in_2023 }} {{ variable.units }}</p>
+      <p class="card-text"><strong>Source:</strong> {{ variable.source }}</p>
+      <a href="/variables" class="btn btn-primary mt-3">Back to Variables</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

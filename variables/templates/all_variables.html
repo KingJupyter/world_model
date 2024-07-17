@@ -1,0 +1,165 @@
+{% extends 'master.html' %}
+
+{% block title %}
+  World Model variables
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <h1 class="text-center mt-3 title text-info">All Variables</h1>
+
+    <div class="row" style="height: 85vh;">
+      <div class="col d-flex flex-column justify-content-center">
+        {% for x in variables %}
+          {% if x.variable_type == 'Input' %}
+            <a href="details/{{ x.id }}" class="row text-decoration-none mx-auto w-50">
+                <div class="variable btn btn-info text-white m-2 {{x.variable_type}}" id={{x.id}}>
+                    {{ x.variable_name }}
+                </div>
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div class="col d-flex flex-column justify-content-center">
+        {% for x in variables %}
+          {% if x.variable_type == 'Calculated' %}
+            <a href="details/{{ x.id }}" class="row text-decoration-none d-flex justify-content-center w-50 mx-auto">
+                <div class="variable btn btn-success text-white m-2 {{x.determining_value.id}} {{x.variable_type}}" id={{x.id}}>
+                    {{ x.variable_name }}
+                </div>
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    <canvas id="canvas"></canvas>
+  </div>
+  
+  <script>
+    const variableElements = document.getElementsByClassName('variable');
+    {% comment %} Remove duplicated calculate variable {% endcomment %}
+    let calculated_variables = Array.from(document.querySelectorAll('.Calculated'));
+    
+    calculated_variables.forEach((variable, variable_index) => {
+      for (let item_index = variable_index + 1; item_index < calculated_variables.length; item_index++) {
+        const item = calculated_variables[item_index];
+        
+        // Check if item exists
+        if (!item) continue;
+    
+        // Check if textContent matches
+        if (variable.textContent === item.textContent) {
+          
+          // Extract numeric classes
+          let dependency_id = Array.from(item.classList).filter(className => Number.isInteger(Number(className)));
+          
+          // Add classes to the variable
+          dependency_id.forEach(id => variable.classList.add(id));
+          
+          // Remove item from DOM
+          item.remove();
+          
+          // Remove item from array and adjust index
+          calculated_variables.splice(item_index, 1);
+          item_index--;
+        }
+      }
+    });
+    
+    
+    
+    {% comment %} Draw the curve {% endcomment %}
+    function isInteger(str) {
+      const num = parseInt(str, 10);
+      return !isNaN(num) && num.toString() === str;
+    }
+
+    function getRandomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+      
+    function drawSmoothCurve(ctx, fromX, fromY, toX, toY) {
+      const controlX1 = (fromX + toX) / 2;
+      const controlY1 = fromY;
+      let controlX2
+      if(fromX == toX){
+        controlX2 = (fromX + toX) / 2 + (toX - toY) / 4;
+      }
+      else {
+        controlX2 = (fromX + toX) / 2;
+      }
+      const controlY2 = toY;
+
+      ctx.beginPath();
+      ctx.moveTo(fromX, fromY);
+      ctx.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, toX, toY);
+      ctx.stroke();
+
+      drawArrowhead(ctx, controlX2, controlY2, toX, toY);
+    }
+
+    function drawArrowhead(ctx, fromX, fromY, toX, toY) {
+      const headLength = 10; // Length of the arrowhead
+      const angle = Math.atan2(toY - fromY, toX - fromX);
+
+      ctx.beginPath();
+      ctx.moveTo(toX, toY);
+      ctx.lineTo(toX - headLength * Math.cos(angle - Math.PI / 6), toY - headLength * Math.sin(angle - Math.PI / 6));
+      ctx.moveTo(toX, toY);
+      ctx.lineTo(toX - headLength * Math.cos(angle + Math.PI / 6), toY - headLength * Math.sin(angle + Math.PI / 6));
+      ctx.stroke();
+    }
+
+    function updateCanvas() {
+      const canvas = document.getElementById('canvas');
+      
+      // Set canvas size
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      
+      const ctx = canvas.getContext('2d');
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      Array.from(variableElements).forEach((variable) => {
+        dependentElementsID = variable.className.split(' ').filter((item) => isInteger(item));
+        if(dependentElementsID.length) {
+          dependentElementsID.forEach((id) => {
+            const color = getRandomColor();
+            ctx.strokeStyle = color; // Set line color
+            ctx.fillStyle = color; // Set fill color for arrowhead
+            const dependentElement = document.getElementById(id);
+            if(dependentElement) {
+              const isInputVariable = dependentElement.classList.contains('Input');
+              if(isInputVariable) {
+                const rect1 = dependentElement?.getBoundingClientRect();
+                const rect2 = variable?.getBoundingClientRect();
+                const fromX = rect1.right;
+                const fromY = rect1.top + rect1.height / 2;
+                const toX = rect2.left;
+                const toY = rect2.top + rect2.height / 2;
+                drawSmoothCurve(ctx, fromX, fromY, toX, toY);
+              }
+              else {
+                const rect1 = dependentElement?.getBoundingClientRect();
+                const rect2 = variable?.getBoundingClientRect();
+                const fromX = rect1.right;
+                const fromY = rect1.top + rect1.height / 2;
+                const toX = rect2.right;
+                const toY = rect2.top + rect2.height / 2;
+                drawSmoothCurve(ctx, fromX, fromY, toX, toY);
+              }
+            }
+          })
+        }
+      });
+    }
+    window.addEventListener('resize', updateCanvas);
+    window.addEventListener('load', updateCanvas);
+  </script>
+{% endblock %}

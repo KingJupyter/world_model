@@ -1,0 +1,235 @@
+.permanent-marker-regular {
+    font-family: "Permanent Marker", cursive;
+    font-weight: 200;
+    font-style: normal;
+}
+
+body {
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #e7f3eb, #a7e4a1);
+    /*fiolet*/
+}
+
+.title {
+    font-family: "Audiowide", cursive;
+    text-shadow: -0.01em -0.01em 0.01em #000;
+    animation: rise 2s ease-in-out 0.5s forwards;
+}
+
+.text {
+    font-family: "Kanit", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+@keyframes title {
+    to {
+        text-shadow: 0em 0.01em #ff5, 0em 0.02em #ff5, 0em 0.02em 0.03em #ff5,
+            -0.01em 0.01em #333, -0.02em 0.02em #333, -0.03em 0.03em #333,
+            -0.04em 0.04em #333, -0.01em -0.01em 0.03em #000, -0.02em -0.02em 0.03em #000,
+            -0.03em -0.03em 0.03em #000;
+        transform: translateY(-0.025em) translateX(0.04em);
+    }
+}
+
+.box {
+    width: 100px;
+    height: 100px;
+    background-color: lightblue;
+    position: absolute;
+}
+
+#box1 {
+    top: 50px;
+    left: 50px;
+}
+
+#box2 {
+    top: 200px;
+    left: 300px;
+}
+
+#canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    /* Ensure the canvas is behind the divs */
+}
+
+/* custom .myButton */
+
+.container .myBtn {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 50px;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container .myBtn a {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 15px 15px rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    padding: 10px;
+    letter-spacing: 1px;
+    text-decoration: none;
+    overflow: hidden;
+    color: #ffffff;
+    font-weight: 400px;
+    z-index: 1;
+    transition: 0.5s;
+    backdrop-filter: blur(15px);
+}
+
+.container .myBtn:hover a {
+    letter-spacing: 3px;
+}
+
+.container .myBtn a::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to left, rgba(255, 255, 255, 0.15), transparent);
+    transform: skewX(45deg) translate(0);
+    transition: 0.5s;
+    filter: blur(0px);
+}
+
+.container .myBtn:hover a::before {
+    transform: skewX(45deg) translate(200px);
+}
+
+.container .myBtn::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translatex(-50%);
+    bottom: -5px;
+    width: 30px;
+    height: 10px;
+    background: #f00;
+    border-radius: 10px;
+    transition: 0.5s;
+    transition-delay: 0.5;
+}
+
+.container .myBtn:hover::before
+
+/*lightup button*/
+    {
+    bottom: 0;
+    height: 50%;
+    width: 80%;
+    border-radius: 30px;
+}
+
+.container .myBtn::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translatex(-50%);
+    top: -5px;
+    width: 30px;
+    height: 10px;
+    background: #f00;
+    border-radius: 10px;
+    transition: 0.5s;
+    transition-delay: 0.5;
+}
+
+.container .myBtn:hover::after
+
+/*lightup button*/
+    {
+    top: 0;
+    height: 50%;
+    width: 80%;
+    border-radius: 30px;
+}
+
+.container .myBtn::before,
+/* 2*/
+.container .myBtn::after {
+    background: #2db2ff;
+    box-shadow: 0 0 5px #2db2ff, 0 0 15px #2db2ff, 0 0 30px #2db2ff,
+        0 0 60px #2db2ff;
+}
+
+/* Text format */
+
+.checkbox-wrapper-63 input[type='checkbox'] {
+    visibility: hidden;
+    display: none;
+  }
+  
+  .checkbox-wrapper-63 *,
+  .checkbox-wrapper-63 ::after,
+  .checkbox-wrapper-63 ::before {
+    box-sizing: border-box;
+  }
+  
+  /* The switch - the box around the slider */
+  .checkbox-wrapper-63 .switch {
+    font-size: 1rem;
+    position: relative;
+    display: inline-block;
+    width: 4em;
+    height: 2em;
+  }
+  
+  /* The slider */
+  .checkbox-wrapper-63 .slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #eee;
+    transition: 0.4s;
+    border-radius: 0.5em;
+    box-shadow: 0 0.2em #dfd9d9;
+  }
+  
+  .checkbox-wrapper-63 .slider:before {
+    position: absolute;
+    content: '';
+    height: 1.5em;
+    width: 1.4em;
+    border-radius: 0.3em;
+    left: 0.3em;
+    bottom: 0.7em;
+    background-color: lightsalmon;
+    transition: 0.4s;
+    box-shadow: 0 0.4em #bcb4b4;
+  }
+  
+  .checkbox-wrapper-63 .slider:hover::before {
+    box-shadow: 0 0.2em #bcb4b4;
+    bottom: 0.5em;
+  }
+  
+  .checkbox-wrapper-63 input:checked + .slider::before {
+    transform: translateX(2em);
+    background: lightgreen;
+  }
+
+  

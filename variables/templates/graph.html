@@ -1,0 +1,27 @@
+{% extends 'master.html' %}
+
+{% block title %}
+  Graph
+{% endblock %}
+
+{% block content %}
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <div class="container">
+  <h1 class="text-center title my-3">Graph</h1>
+  <div>
+    <form method="get" id="variable_selection_form" class="m-3 text-end">
+      <select name="first_selected_variable" id="variable-select" onchange="document.getElementById('variable_selection_form').submit()">
+        {% for variable in calculated_variables %}
+          <option value="{{ variable.id }}" {% if variable.id == first_selected_variable_id %}selected{% endif %}>{{ variable.variable_name }}</option>
+        {% endfor %}
+      </select>
+      <select name="second_selected_variable" id="variable-select" onchange="document.getElementById('variable_selection_form').submit()">
+        {% for variable in calculated_variables %}
+          <option value="{{ variable.id }}" {% if variable.id == second_selected_variable_id %}selected{% endif %}>{{ variable.variable_name }}</option>
+        {% endfor %}
+      </select>
+    </form>
+  </div>
+  <div class="w-100 m-5">{{ graph_html|safe }}</div>
+</div>
+{% endblock %}
