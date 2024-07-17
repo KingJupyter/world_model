@@ -14,7 +14,7 @@ class Variable(models.Model):
     variable_type = models.CharField(max_length=10, choices=VARIABLE_TYPE_CHOICES)
     variable_options = models.TextField(null=True, blank=True)
     variable_definition = models.TextField(null=True, blank=True)
-    level_in_2023 = models.FloatField()
+    level_in_2023 = models.FloatField(null=True, blank=True)
     units = models.CharField(max_length=50, null=True, blank=True)
     source = models.CharField(max_length=255, null=True, blank=True)
     determining_value = models.ForeignKey(

@@ -68,13 +68,6 @@ def calc_yearly_values(variable, target_year):
             spl = PchipInterpolator(np.array(year), np.array(value))
             year_new = np.linspace(2023, target_year, num=target_year-2022)
             input_values = spl(year_new)
-            # increase_rate = (target_year_value - level_in_2023) / (target_year - 2024)
-            # input_values = []
-            # tmp = level_in_2023
-            # input_values.append(tmp)
-            # for year in range(2024, target_year + 1):
-            #     tmp = tmp + increase_rate
-            #     input_values.append(tmp)
         except YearlyInputValue.DoesNotExist:
             logger.error(f'Value for {variable.variable_name} in year {target_year} not found')
             return None
