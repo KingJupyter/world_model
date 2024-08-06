@@ -5,9 +5,8 @@ class VariableAdmin(admin.ModelAdmin):
     list_display = (
         "variable_name", "variable_type", "variable_options", 
         "variable_definition", 'level_in_2023', 'units', 
-        'source', 'determining_value',
-        'base_exp', 'base_log', 'linear_coeff', 'quadratic_coeff',
-        'cubic_coeff', 'constant_term', 'standard_deviation'
+        'source', 'determining_value', 'linear_coeff', 'quadratic_coeff',
+        'cubic_coeff', 'exp_coeff', 'log_coeff', 'exp_rate_coeff', 'standard_deviation'
     )
     search_fields = ("variable_name", "variable_type", "source")
     list_filter = ("variable_type", "source")
@@ -18,8 +17,8 @@ class VariableAdmin(admin.ModelAdmin):
         ('Details', {
             'fields': (
                 'level_in_2023', 'units', 'source', 'determining_value', 
-                'base_exp', 'base_log', 'linear_coeff', 'quadratic_coeff',
-                'cubic_coeff', 'constant_term', 'standard_deviation'
+                'exp_coeff', 'log_coeff', 'linear_coeff', 'quadratic_coeff',
+                'cubic_coeff', 'exp_rate_coeff', 'standard_deviation'
             )
         }),
     )

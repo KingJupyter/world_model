@@ -12,42 +12,47 @@ logger = logging.getLogger(__name__)
 
 # Calculate the value from variable and input value
 def formula(variable, determining_values):
+    print('determining values-->', determining_values)
     results = []
-    for value in determining_values:
-        result = 0
-        if variable.base_exp:
-            if variable.base_exp < 0:
-                result -= math.pow(abs(variable.base_exp), value)
-            else:
-                result += math.pow(variable.base_exp, value)
+    results.append(variable.level_in_2023)
+    
+    for index in range(0, len(determining_values) - 1):
+        multiplation_rate = 1  # Initialized to 1
+        if determining_values[index + 1] >= determining_values[index]:
+            rate = (determining_values[index + 1] - determining_values[index]) / determining_values[index]
+        else:
+            rate = ((determining_values[index] - (determining_values[index + 1])) / determining_values[index + 1])
+        print('rate-->', rate)
 
-        if variable.base_log:
-            if variable.base_log < 0:
-                result -= math.log(abs(variable.base_log), value)
-            else:
-                result += math.log(variable.base_log, value)
-                
         if variable.linear_coeff:
-            result += variable.linear_coeff * value
+            multiplation_rate += variable.linear_coeff * rate
 
         if variable.quadratic_coeff:
-            if variable.quadratic_coeff < 0:
-                result -= variable.quadratic_coeff * math.pow(value, 2)
-            result += variable.quadratic_coeff * math.pow(value, 2)
-                
-        if variable.cubic_coeff:
-            result += variable.cubic_coeff * math.pow(value, 3)
+            quadratic_term = variable.quadratic_coeff * math.pow(rate, 2)
+            multiplation_rate += quadratic_term
 
-        if variable.constant_term:
-            result += variable.constant_term
+        if variable.cubic_coeff:
+            multiplation_rate += variable.cubic_coeff * math.pow(rate, 3)
+
+        if variable.log_coeff:
+            log_term = variable.log_coeff * math.log(rate + 1)
+            multiplation_rate += log_term
+
+        if variable.exp_coeff and variable.exp_rate_coeff:
+            multiplation_rate += variable.exp_coeff * (math.exp(variable.exp_rate_coeff * rate) - 1)
+
+        if determining_values[index + 1] >= determining_values[index] and multiplation_rate >= 0:
+            result = multiplation_rate * results[-1]
+        else:
+            result = abs(results[-1] / multiplation_rate)
 
         if variable.standard_deviation:
-            # convert deviation to real value
             standard_deviation_value = result * variable.standard_deviation / 100
             result = np.random.normal(loc=result, scale=standard_deviation_value)
 
         results.append(result)
 
+    print('results--->', results)
     return results
 
 # 
@@ -121,7 +126,7 @@ def display_graph(first_selected_variable_id, second_selected_variable_id):
         return None
 
     years = []
-    for year in range(2024, target_year + 1):
+    for year in range(2023, target_year + 1):
         years.append(year)
 
     [first_average_yearly_values, title1] = calc_average_value_selected(first_selected_variable_id, target_year)
@@ -135,7 +140,7 @@ def display_graph(first_selected_variable_id, second_selected_variable_id):
     )
 
     fig.add_trace(
-        go.Scatter(x=years, y=second_average_yearly_values, name=second_variable.variable_name, line_shape='spline'),
+        go.Scatter(x=years, y=second_average_yearly_values, name=second_variable.variable_name, line_shape='spline',line=dict(dash='dash')),
         secondary_y=True,
     )
 

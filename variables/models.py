@@ -24,12 +24,12 @@ class Variable(models.Model):
         on_delete=models.SET_NULL,
         related_name='determined_by'
     )
-    base_exp = models.FloatField(null=True, blank=True)
-    base_log = models.FloatField(null=True, blank=True)
     linear_coeff = models.FloatField(null=True, blank=True)
     quadratic_coeff = models.FloatField(null=True, blank=True)
     cubic_coeff = models.FloatField(null=True, blank=True)
-    constant_term = models.FloatField(null=True, blank=True)
+    log_coeff = models.FloatField(null=True, blank=True)
+    exp_coeff = models.FloatField(null=True, blank=True)
+    exp_rate_coeff = models.FloatField(null=True, blank=True)
     standard_deviation = models.FloatField(null=True, blank=True)
 
     def __str__(self):
@@ -40,15 +40,15 @@ class Variable(models.Model):
 
         # Custom validation logic
         if self.variable_type == self.INPUT:
-            if self.determining_value is not None or self.base_exp is not None or self.base_log is not None or self.linear_coeff is not None or self.quadratic_coeff is not None or self.cubic_coeff is not None or self.constant_term is not None or self.standard_deviation is not None:
+            if self.determining_value is not None or self.exp_coeff is not None or self.log_coeff is not None or self.linear_coeff is not None or self.quadratic_coeff is not None or self.cubic_coeff is not None or self.exp_rate_coeff is not None or self.standard_deviation is not None:
                 raise ValidationError({
                     'determining_value': 'Determining value must be null for Input type.',
-                    'base_exp': 'Base exp must be null for Input type.',
-                    'base_log': 'Base log must be null for Input type.',
+                    'exp_coeff': 'Base exp must be null for Input type.',
+                    'log_coeff': 'Base log must be null for Input type.',
                     'linear_coeff': 'Linear coefficient must be null for Input type.',
                     'quadratic_coeff': 'Quadratic coefficient must be null for Input type.',
                     'cubic_coeff': 'Cubic coefficient must be null for Input type.',
-                    'constant_term': 'Constant coefficient must be null for Input type.',
+                    'exp_rate_coeff': 'Constant coefficient must be null for Input type.',
                     'standard_deviation': 'Standard coefficient must be null for Input type.',
                 })
     
