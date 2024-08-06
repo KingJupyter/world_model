@@ -5,42 +5,62 @@ import numpy as np
 import logging
 import math
 from scipy.interpolate import PchipInterpolator
+from functools import lru_cache
+
+from django.core.cache import cache # Import Django's caching system if necessary
 
 from .models import Variable, TargetYear, YearlyInputValue
 
 logger = logging.getLogger(__name__)
+
+# Define cache timeout (seconds)
+CACHE_TIMEOUT = 60 * 15
+
+# Cache results for frequent queries
+@lru_cache(maxsize=128)
+def get_variable_by_id(variable_id):
+    return Variable.objects.get(id=variable_id)
+
+@lru_cache(maxsize=128)
+def get_yearly_input_values(variable_id):
+    return list(YearlyInputValue.objects.filter(variable=variable_id))
+
+@lru_cache(maxsize=1) # Assuming target year is rarely changed
+def get_target_year():
+    return TargetYear.objects.get().year
 
 # Calculate the value from variable and input value
 def formula(variable, determining_values):
     results = [variable.level_in_2023]
     
     for index in range(0, len(determining_values) - 1):
-        multiplation_rate = 1
+        multiplication_rate = 1
         if determining_values[index + 1] >= determining_values[index]:
             rate = (determining_values[index + 1] - determining_values[index]) / determining_values[index]
         else:
             rate = ((determining_values[index] - (determining_values[index + 1])) / determining_values[index + 1])
+        
         print('rate-->', rate)
 
         if variable.linear_coeff:
-            multiplation_rate += variable.linear_coeff * rate
+            multiplication_rate += variable.linear_coeff * rate
 
         if variable.quadratic_coeff:
-            multiplation_rate += variable.quadratic_coeff * math.pow(rate, 2)
+            multiplication_rate += variable.quadratic_coeff * math.pow(rate, 2)
 
         if variable.cubic_coeff:
-            multiplation_rate += variable.cubic_coeff * math.pow(rate, 3)
+            multiplication_rate += variable.cubic_coeff * math.pow(rate, 3)
 
         if variable.log_coeff:
-            multiplation_rate += variable.log_coeff * math.log(rate + 1)
+            multiplication_rate += variable.log_coeff * math.log(rate + 1)
 
         if variable.exp_coeff and variable.exp_rate_coeff:
-            multiplation_rate += variable.exp_coeff * (math.exp(variable.exp_rate_coeff * rate) - 1)
+            multiplication_rate += variable.exp_coeff * (math.exp(variable.exp_rate_coeff * rate) - 1)
 
-        if determining_values[index + 1] >= determining_values[index] and multiplation_rate >= 0:
-            result = multiplation_rate * results[-1]
+        if determining_values[index + 1] >= determining_values[index] and multiplication_rate >= 0:
+            result = multiplication_rate * results[-1]
         else:
-            result = abs(results[-1] / multiplation_rate)
+            result = abs(results[-1] / multiplication_rate)
             
         if variable.standard_deviation:
             standard_deviation_value = result * variable.standard_deviation / 100
@@ -56,7 +76,7 @@ def calc_yearly_values(variable, target_year):
         try:
             year = [2023]
             value = [variable.level_in_2023]
-            variable_values = YearlyInputValue.objects.filter(variable=variable.id)
+            variable_values = get_yearly_input_values(variable.id)
 
             for item in variable_values:
                 if item.value:
@@ -84,7 +104,7 @@ def run_simulations(selected_variable_id, target_year, num_simulations=100):
     try:
         all_simulated_values = []
         title = []
-        selected_variable = Variable.objects.get(id=selected_variable_id)
+        selected_variable = get_variable_by_id(selected_variable_id)
         calculated_variables_of_selected = Variable.objects.filter(variable_name=selected_variable.variable_name)
         
         for variable in calculated_variables_of_selected:
@@ -124,10 +144,10 @@ def run_simulations(selected_variable_id, target_year, num_simulations=100):
 
 def display_graph(first_selected_variable_id, second_selected_variable_id):
     print('started----------------------------------------------------------------------------------------!!!!!!')
-    first_variable = Variable.objects.get(id=first_selected_variable_id)
-    second_variable = Variable.objects.get(id=second_selected_variable_id)
+    first_variable = get_variable_by_id(first_selected_variable_id)
+    second_variable = get_variable_by_id(second_selected_variable_id)
     try:    
-        target_year = TargetYear.objects.get().year
+        target_year = get_target_year()
     except TargetYear.DoesNotExist:
         logger.error("Target year doesn't exist")
         return None
